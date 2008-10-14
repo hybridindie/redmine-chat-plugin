@@ -1,0 +1,17 @@
+<tr class="<%= message_class(message) %>">
+  <td class="from">
+    <%# if new_speaker?(message) || system_message?(message) %>
+      <div class="from"><%= message.from %></div>
+    <%# end %>  
+  </td>
+  <td class="message">
+    <div class="message"><%= message_body message %></div>
+  </td>
+  <td class="time">
+    <% if !message.timestamp? && (new_speaker?(message) || message.system?) %>
+    <div class="time">
+      <%= message.created_on.eztime(chat_time_format) %>
+    </div>
+    <% end %>
+  </td>
+</tr>

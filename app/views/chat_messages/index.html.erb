@@ -1,0 +1,112 @@
+<%= juggernaut(:client_id => User.current.id, :debug => true) %>
+<div id="chat_header">
+  <table id="container" style="width: 100%;">
+    <tr height="0">
+      <td colspan="2">
+        <div id="header">
+          <table>
+            <tr>
+              <td class="appname">Redmine Developer Chat</td>
+              <td class="slogan">go ahead, run your mouth</td>
+              <td class="toolbar">
+                <%#= link_to glyph('application_get'), '#' %>
+              </td>
+              <td class="session">
+                <% if User.current.logged? %>
+                  <%= User.current  %> | <%= link_to 'Logout', signout_url %>
+                <% end %>
+              </td>
+            </tr>
+          </table>    
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td id="content">
+        <div id="chatwindow">
+          <div id="chat">
+            <table class="chat" id="messages">
+              <%= recent_messages %>
+            </table>
+          </div>  
+          <div class="bottom"></div>
+        </div>
+      </td>
+      <td id="sidebar">
+        <div class="panel">
+          <h2>Curent Users</h2>
+          <!-- <p class="wip">
+            This feature is still a work-in-progress.
+          </p> -->
+          <ul id="gabbers">
+            <%= render :partial => 'chat_users/users', :collection => @chat_users %>
+          </ul>
+        </div>
+
+        <% if 1==0#RAILS_ENV == 'development' %>
+          <div class="panel">
+            <h2>Debug</h2>
+            <%= link_to_function 'Set to idle', 'RedmineChat.setIdle();' %><br />
+            <%= link_to_function 'Set to online', 'RedmineChat.setOnline();' %><br />
+            <%= link_to_function 'Set to offline', 'RedmineChat.setOffline();' %><br />
+          </div>
+        <% end %>
+      </td>  
+    </tr>
+    <tr id="bottom">
+      <td>
+        <div id="logging_in">
+          <%= image_tag 'loading.gif', :class => 'glyph' %> <strong>Logging in to chat...</strong>
+        </div>  
+        <div id="chatbox" style="display: none">
+          <%= form_remote_tag(
+                :url => { :action => :new },
+                :complete => "$('message').value = ''", :id => 'chatbox-f' ) %>
+            <%= hidden_field_tag 'previous_speaker' %>
+            <%= text_area_tag( 'message', '', { :rows => 4, :cols => 60, :id => 'message'} ) %>
+            <%= submit_tag "Add", :style => 'display: none' %>
+          </form>
+        </div>
+
+        <script type="text/javascript" charset="utf-8">
+          RedmineChat.names = <%= ChatUser.chat_users.map(&:nickname).to_json %>;
+
+          Event.observe($('message'), 'keypress', function(e) {
+            m = $('message');
+            if (e.keyCode == Event.KEY_RETURN && e.shiftKey == false) {
+              if (m.value == null || m.value == '' || m.value == "\n") {
+                Event.stop(e);
+                return false;
+              }
+
+              window.juggernaut.timer.resetIdleStatus();
+
+              $('message').form.onsubmit();
+              Event.stop(e);
+              return false;
+            } else if (e.keyCode == Event.KEY_TAB) {
+              RedmineChatTabCompletion.complete(e, m);
+            } else {
+              // console.log(e);
+            }
+          });
+        </script>
+      </td>
+      <td>
+        <!-- Who knows what should go here... -->
+        
+      </td>
+    </tr>      
+    </tr>  
+  </table>
+</div>
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'chat', :plugin => 'redmine_dev_chat' %>
+  <%= javascript_include_tag 'juggernaut/juggernaut', 'juggernaut/swfobject', 'autoscroll', 'dev_chat', :plugin => 'redmine_dev_chat' %>
+  <script type="text/javascript" charset="utf-8">
+    $$('tr.u-1').each(function(m) {
+      m.addClassName('me');
+    });
+  </script>
+<% end %>
+
