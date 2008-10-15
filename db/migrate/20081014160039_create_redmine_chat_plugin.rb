@@ -1,4 +1,4 @@
-class CreateRedmineDevChat < ActiveRecord::Migration
+class CreateRedmineChatPlugin < ActiveRecord::Migration
   def self.up
      create_table "chat_users", :force => true do |t|
        t.integer :user_id
@@ -16,10 +16,17 @@ class CreateRedmineDevChat < ActiveRecord::Migration
        t.boolean :notice, :default => false
        t.boolean :timestamp, :default => false
      end
+     
+     create_table "chat_rooms", :force => true do |t|
+       t.string   "name"
+       t.string   "description"
+       t.timestamps
+     end
   end
 
   def self.down
-    drop_table :chat_devs
+    drop_table :chat_users
     drop_table :chat_messages
+    drop_table :chat_rooms
   end
 end

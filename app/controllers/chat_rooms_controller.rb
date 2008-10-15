@@ -1,6 +1,7 @@
 class ChatRoomsController < ApplicationController
-  before_filter :is_logged_in?
-  # GET /chat_rooms
+  unloadable
+  
+  before_filter :require_login, :except => [:broadcast]  # GET /chat_rooms
   # GET /chat_rooms.xml
   def index
     @chat_rooms = ChatRoom.find(:all)

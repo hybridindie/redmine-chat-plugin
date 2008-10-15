@@ -1,6 +1,6 @@
 <h1>New chat_room</h1>
 
-<% form_for(@chat_room) do |f| %>
+<% form_for(@chat_room, {:controller => 'chat_rooms'}) do |f| %>
   <%= f.error_messages %>
 
   <p>

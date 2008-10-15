@@ -1,3 +1,8 @@
 Juggernaut Powered Chat Room for Redmine
 
+INSTALLATION:
+
+sudo gem install juggernaut
+./script/plugin install http://juggernaut.rubyforge.org/svn/trunk/juggernaut
+
 DETAILS: COMING SOON
