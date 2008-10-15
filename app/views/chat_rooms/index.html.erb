@@ -1,4 +1,4 @@
-<%= juggernaut(:channels => [0], :client_id => session[:user_id]) %>
+<%= juggernaut(:debug => true,  :client_id => User.current.id) %>
 
 <h1>Listing chat_rooms</h1>
 
@@ -11,19 +11,19 @@
 
 <% for chat_room in @chat_rooms %>
   <tr>
-	<td><%=Juggernaut.show_users_for_channels(chat_room.id).size %></td>
+	<td></td>
     <td><%=h chat_room.name %></td>
     <td><%=h chat_room.description %></td>
-    <td><%= link_to 'Show', chat_room %></td>
-    <td><%= link_to 'Edit', edit_chat_room_path(chat_room) %></td>
-    <td><%= link_to 'Destroy', chat_room, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to 'Show', {:action => 'show', :id => chat_room} %></td>
+    <td><%= link_to 'Edit', {:action => 'edit', :id => chat_room} %></td>
+    <td><%= link_to 'Destroy', {:action => 'destroy', :id => chat_room}, :confirm => 'Are you sure?', :method => :delete %></td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New chat_room', new_chat_room_path %>
+<%= link_to 'New chat_room', {:action => 'new'} %>
 
 <br />
 

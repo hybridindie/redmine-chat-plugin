@@ -1,6 +1,6 @@
 <h1>New chat_room</h1>
 
-<% form_for(@chat_room, {:controller => 'chat_rooms'}) do |f| %>
+<% form_for(@chat_room, :url => {:controller => 'chat_rooms', :action => 'create'}) do |f| %>
   <%= f.error_messages %>
 
   <p>
@@ -16,4 +16,4 @@
   </p>
 <% end %>
 
-<%= link_to 'Back', chat_rooms_path %>
+<%= link_to 'Back', :controller => 'chat_rooms' %>

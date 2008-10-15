@@ -1,7 +1,7 @@
 class ChatRoomsController < ApplicationController
   unloadable
   
-  before_filter :require_login, :except => [:broadcast]  # GET /chat_rooms
+  # GET /chat_rooms
   # GET /chat_rooms.xml
   def index
     @chat_rooms = ChatRoom.find(:all)
@@ -47,7 +47,7 @@ class ChatRoomsController < ApplicationController
     respond_to do |format|
       if @chat_room.save
         flash[:notice] = 'ChatRoom was successfully created.'
-        format.html { redirect_to(@chat_room) }
+        format.html { redirect_to(:action => 'show', :id => @chat_room) }
         format.xml  { render :xml => @chat_room, :status => :created, :location => @chat_room }
       else
         format.html { render :action => "new" }
@@ -86,22 +86,18 @@ class ChatRoomsController < ApplicationController
   end
   
   def send_data
-      render :juggernaut => {:type => :send_to_channels, :channels => [params[:id].to_i] } do |page|
-        page.insert_html :bottom, 'chat_room', "<p>#{current_user.login}: #{h params[:chat_input]}</p>"
-        page.call :scrollChatPanel, 'chat_room'
-      end
-      render :nothing => true
+    m = params[:chat_input]
+    if !m.blank?
+      @message = ChatMessage.new(:message => m, :from => User.current, :created_at => Time.now)
+      render :juggernaut do |page|
+        page.add_message @message
+      end  
+    end
+      #render :juggernaut => {:type => :send_to_channels, :channels => [params[:id].to_i] } do |page|
+      #  page.insert_html :bottom, 'chat_room', "<p>#{User.current}: #{h params[:chat_input]}</p>"
+      #  page.call :scrollChatPanel, 'chat_room'
+      #end
+      render :nothing => true, :status => 200
   end
   
- 	private
-
-	def is_logged_in?
-	  if logged_in?
-	    true
-	  else
-	    flash[:error] = "You must be logged in to chat"
-	    redirect_to("/login")
-	    false
-	  end
-	end
 end

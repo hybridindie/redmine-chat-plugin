@@ -1,6 +1,6 @@
-<%= juggernaut(:channels => [@chat_room.id], :client_id => session[:user_id]) %>
+<%= juggernaut(:channels => [@chat_room.id], :client_id => User.current.id, :debug => true) %>
 
-<p><%= link_to 'Back', chat_rooms_path %></p>
+<p><%= link_to 'Back', {:action => 'index'} %></p>
 
 <h1><%=h @chat_room.name %></h1>
 
@@ -21,3 +21,17 @@
 </div>
 
 <div id="private_messages"></div>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'chat', :plugin => 'redmine_chat_plugin' %>
+  <%= javascript_include_tag 'juggernaut/juggernaut', 'juggernaut/swfobject', 'autoscroll', :plugin => 'redmine_chat_plugin' %>
+  <script type="text/javascript" charset="utf-8">
+    $$('tr.u-1').each(function(m) {
+      m.addClassName('me');
+    });
+    function scrollChatPanel(room){
+  	  div = $(room);			
+  	  div.scrollTop = 0xffff;
+  	}
+  </script>
+<% end %>
